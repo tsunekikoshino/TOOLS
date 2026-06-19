@@ -6,18 +6,22 @@
   <title>不動産投資分析ツール</title>
   <style>
     :root {
-      color-scheme: light;
-      --ink: #18211f;
-      --muted: #60706b;
-      --line: #dce5e1;
-      --panel: #ffffff;
-      --soft: #f5f8f6;
-      --accent: #0e766e;
-      --accent-2: #b45b38;
-      --good: #0b7a45;
-      --warn: #b25e00;
-      --bad: #b33535;
-      --shadow: 0 16px 42px rgba(23, 42, 37, 0.10);
+      color-scheme: dark;
+      --bg: #0b0d10;
+      --bg-2: #15110c;
+      --panel: rgba(22, 24, 27, 0.88);
+      --panel-2: rgba(255, 255, 255, 0.055);
+      --ink: #f7f1e7;
+      --muted: #b9aa94;
+      --soft: #80715e;
+      --line: rgba(230, 204, 157, 0.20);
+      --gold: #d6b46f;
+      --gold-2: #f1d99e;
+      --amber: #b8844f;
+      --good: #7ed3a4;
+      --warn: #f1c06d;
+      --bad: #f08d82;
+      --shadow: 0 28px 80px rgba(0, 0, 0, 0.38);
     }
 
     * {
@@ -30,47 +34,64 @@
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--ink);
       background:
-        linear-gradient(180deg, rgba(14, 118, 110, 0.10), rgba(255, 255, 255, 0) 390px),
-        var(--soft);
+        radial-gradient(circle at 18% 0%, rgba(214, 180, 111, 0.18), transparent 28rem),
+        radial-gradient(circle at 85% 12%, rgba(140, 92, 46, 0.18), transparent 24rem),
+        linear-gradient(135deg, var(--bg), #111417 48%, var(--bg-2));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.13;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.10) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: linear-gradient(to bottom, black, transparent 82%);
     }
 
     button,
-    input,
-    select {
+    input {
       font: inherit;
     }
 
     .shell {
-      width: min(1180px, calc(100% - 28px));
+      position: relative;
+      width: min(1220px, calc(100% - 28px));
       margin: 0 auto;
-      padding: 22px 0 34px;
+      padding: 24px 0 38px;
     }
 
     header {
       display: grid;
+      grid-template-columns: minmax(0, 1fr);
       gap: 16px;
-      grid-template-columns: 1fr;
       align-items: end;
-      margin-bottom: 18px;
+      padding: 18px 0 20px;
     }
 
-    .title-block {
-      display: grid;
-      gap: 8px;
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--gold-2);
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
     }
 
     h1 {
       margin: 0;
-      font-size: clamp(1.65rem, 5vw, 3rem);
-      line-height: 1.08;
+      font-size: clamp(1.75rem, 6vw, 3.6rem);
+      line-height: 1.04;
       letter-spacing: 0;
     }
 
     .lead {
-      margin: 0;
-      max-width: 680px;
+      max-width: 760px;
+      margin: 12px 0 0;
       color: var(--muted);
-      line-height: 1.7;
+      line-height: 1.75;
       font-size: 0.98rem;
     }
 
@@ -84,38 +105,48 @@
       min-height: 42px;
       border: 1px solid var(--line);
       border-radius: 8px;
-      background: var(--panel);
-      color: var(--ink);
       padding: 0 14px;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.06);
       cursor: pointer;
-      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
     }
 
     .btn.primary {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: white;
+      color: #19140c;
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--gold-2), var(--gold));
+      font-weight: 800;
+    }
+
+    .status {
+      min-height: 18px;
+      margin-top: 8px;
+      color: var(--gold-2);
+      font-size: 0.78rem;
+      text-align: right;
     }
 
     .layout {
       display: grid;
-      gap: 16px;
       grid-template-columns: minmax(0, 1fr);
+      gap: 16px;
     }
 
     .panel {
-      background: rgba(255, 255, 255, 0.88);
       border: 1px solid var(--line);
       border-radius: 8px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035)), var(--panel);
       box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
     }
 
     .panel-heading {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      padding: 16px 16px 0;
+      gap: 14px;
+      align-items: center;
+      padding: 17px 17px 0;
     }
 
     h2 {
@@ -124,24 +155,25 @@
       letter-spacing: 0;
     }
 
-    .inputs {
+    .inputs,
+    .results {
       display: grid;
       gap: 14px;
-      padding: 16px;
+      padding: 17px;
     }
 
     details {
       border: 1px solid var(--line);
       border-radius: 8px;
-      background: var(--panel);
+      background: rgba(255, 255, 255, 0.045);
       overflow: hidden;
     }
 
     summary {
       cursor: pointer;
       padding: 13px 14px;
-      font-weight: 700;
-      color: var(--ink);
+      color: var(--gold-2);
+      font-weight: 800;
       list-style-position: inside;
     }
 
@@ -153,56 +185,75 @@
 
     label {
       display: grid;
-      gap: 6px;
+      gap: 7px;
       color: var(--muted);
-      font-size: 0.84rem;
+      font-size: 0.83rem;
       line-height: 1.35;
     }
 
     .control {
       display: grid;
-      grid-template-columns: 1fr auto;
+      grid-template-columns: minmax(0, 1fr) auto;
       align-items: center;
-      min-height: 42px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #fff;
+      min-height: 44px;
       overflow: hidden;
+      border: 1px solid rgba(230, 204, 157, 0.24);
+      border-radius: 8px;
+      background: rgba(5, 6, 8, 0.48);
     }
 
-    .control input {
+    input {
       width: 100%;
       min-width: 0;
       border: 0;
       outline: 0;
-      padding: 10px 10px 10px 12px;
       color: var(--ink);
       background: transparent;
+      padding: 11px 10px 11px 12px;
       text-align: right;
     }
 
-    .unit {
-      min-width: 44px;
-      padding: 0 10px;
-      color: var(--muted);
-      font-size: 0.84rem;
-      text-align: center;
-      border-left: 1px solid var(--line);
+    input:focus {
+      box-shadow: inset 0 0 0 2px rgba(214, 180, 111, 0.34);
     }
 
-    .results {
-      display: grid;
-      gap: 14px;
-      padding: 16px;
+    .unit {
+      min-width: 46px;
+      padding: 0 10px;
+      border-left: 1px solid rgba(230, 204, 157, 0.18);
+      color: var(--soft);
+      font-size: 0.82rem;
+      text-align: center;
     }
 
     .score {
+      position: relative;
+      overflow: hidden;
       display: grid;
-      gap: 12px;
-      padding: 16px;
-      background: #102622;
-      color: white;
+      gap: 14px;
+      min-height: 224px;
+      padding: 18px;
+      border: 1px solid rgba(241, 217, 158, 0.26);
       border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(214, 180, 111, 0.20), rgba(255, 255, 255, 0.03)),
+        linear-gradient(150deg, #11100e, #202225);
+    }
+
+    .score::after {
+      content: "";
+      position: absolute;
+      inset: auto -12% -58% 34%;
+      height: 220px;
+      transform: rotate(-10deg);
+      background: linear-gradient(90deg, transparent, rgba(241, 217, 158, 0.16), transparent);
+    }
+
+    .score-content {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 16px;
     }
 
     .score-top {
@@ -213,62 +264,64 @@
     }
 
     .score-label {
-      color: rgba(255, 255, 255, 0.72);
-      font-size: 0.82rem;
+      color: var(--muted);
+      font-size: 0.8rem;
     }
 
     .score-value {
-      margin-top: 4px;
-      font-size: clamp(2rem, 13vw, 4.2rem);
+      margin-top: 5px;
+      font-size: clamp(2rem, 12vw, 4.45rem);
       line-height: 0.95;
-      font-weight: 800;
+      font-weight: 900;
       letter-spacing: 0;
+      overflow-wrap: anywhere;
     }
 
     .badge {
       flex: 0 0 auto;
+      border: 1px solid rgba(241, 217, 158, 0.28);
       border-radius: 999px;
       padding: 7px 10px;
-      background: rgba(255, 255, 255, 0.12);
-      color: white;
-      font-size: 0.82rem;
+      color: var(--gold-2);
+      background: rgba(0, 0, 0, 0.28);
       white-space: nowrap;
+      font-size: 0.82rem;
     }
 
     .score-note {
       margin: 0;
-      color: rgba(255, 255, 255, 0.78);
-      line-height: 1.6;
+      color: var(--muted);
+      line-height: 1.65;
       font-size: 0.9rem;
     }
 
     .kpis {
       display: grid;
-      gap: 10px;
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
     }
 
     .metric {
+      min-height: 96px;
+      display: grid;
+      gap: 10px;
+      align-content: space-between;
       border: 1px solid var(--line);
       border-radius: 8px;
       padding: 13px;
-      background: var(--panel);
-      min-height: 94px;
-      display: grid;
-      align-content: space-between;
-      gap: 10px;
+      background: rgba(255, 255, 255, 0.045);
     }
 
     .metric span {
       color: var(--muted);
-      font-size: 0.78rem;
-      line-height: 1.3;
+      font-size: 0.76rem;
+      line-height: 1.35;
     }
 
     .metric strong {
-      font-size: clamp(1.08rem, 5vw, 1.55rem);
-      line-height: 1.08;
-      letter-spacing: 0;
+      color: var(--ink);
+      font-size: clamp(1.05rem, 4.7vw, 1.5rem);
+      line-height: 1.1;
       overflow-wrap: anywhere;
     }
 
@@ -284,41 +337,42 @@
       color: var(--bad);
     }
 
-    .chart-wrap {
+    .chart-wrap,
+    .table-wrap {
       display: grid;
-      gap: 10px;
+      gap: 11px;
       border: 1px solid var(--line);
       border-radius: 8px;
       padding: 14px;
-      background: var(--panel);
+      background: rgba(255, 255, 255, 0.04);
     }
 
     canvas {
       width: 100%;
-      height: 250px;
+      height: 260px;
       display: block;
     }
 
-    .table {
+    .table-scroll {
       overflow-x: auto;
-      border: 1px solid var(--line);
+      border: 1px solid rgba(230, 204, 157, 0.16);
       border-radius: 8px;
-      background: var(--panel);
     }
 
     table {
       width: 100%;
-      min-width: 560px;
+      min-width: 980px;
       border-collapse: collapse;
+      background: rgba(0, 0, 0, 0.16);
     }
 
     th,
     td {
       padding: 11px 12px;
-      border-bottom: 1px solid var(--line);
+      border-bottom: 1px solid rgba(230, 204, 157, 0.14);
       text-align: right;
       white-space: nowrap;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
     }
 
     th:first-child,
@@ -327,10 +381,10 @@
     }
 
     th {
-      color: var(--muted);
-      font-size: 0.78rem;
-      font-weight: 700;
-      background: #f7faf8;
+      color: var(--gold-2);
+      background: rgba(214, 180, 111, 0.08);
+      font-size: 0.75rem;
+      font-weight: 800;
     }
 
     tr:last-child td {
@@ -340,13 +394,13 @@
     .memo {
       margin: 0;
       color: var(--muted);
-      line-height: 1.65;
-      font-size: 0.86rem;
+      line-height: 1.7;
+      font-size: 0.84rem;
     }
 
     @media (min-width: 760px) {
       header {
-        grid-template-columns: 1fr auto;
+        grid-template-columns: minmax(0, 1fr) auto;
       }
 
       .field-grid {
@@ -358,9 +412,9 @@
       }
     }
 
-    @media (min-width: 980px) {
+    @media (min-width: 1040px) {
       .layout {
-        grid-template-columns: minmax(360px, 0.88fr) minmax(0, 1.12fr);
+        grid-template-columns: minmax(380px, 0.82fr) minmax(0, 1.18fr);
         align-items: start;
       }
 
@@ -370,10 +424,10 @@
       }
     }
 
-    @media (max-width: 430px) {
+    @media (max-width: 460px) {
       .shell {
-        width: min(100% - 18px, 1180px);
-        padding-top: 14px;
+        width: min(100% - 18px, 1220px);
+        padding-top: 12px;
       }
 
       .panel-heading,
@@ -383,27 +437,39 @@
         padding-right: 10px;
       }
 
-      .kpis {
-        grid-template-columns: 1fr;
-      }
-
       .actions {
         display: grid;
         grid-template-columns: 1fr 1fr;
       }
 
       .btn {
-        padding: 0 10px;
+        padding: 0 9px;
+        font-size: 0.88rem;
+      }
+
+      .kpis {
+        grid-template-columns: 1fr;
+      }
+
+      .score-top {
+        display: grid;
+      }
+
+      .badge {
+        width: fit-content;
       }
     }
 
     @media print {
       body {
-        background: white;
+        background: #fff;
+        color: #111;
       }
 
+      body::before,
       .actions,
-      .input-panel {
+      .input-panel,
+      .status {
         display: none;
       }
 
@@ -417,6 +483,8 @@
 
       .panel {
         box-shadow: none;
+        color: #111;
+        background: #fff;
       }
     }
   </style>
@@ -424,13 +492,18 @@
 <body>
   <main class="shell">
     <header>
-      <div class="title-block">
+      <div>
+        <p class="eyebrow">Real Estate Investment Suite</p>
         <h1>不動産投資分析ツール</h1>
-        <p class="lead">購入価格、融資、賃料、運営費、売却条件を入力すると、表面利回り、NOI、返済後キャッシュフロー、DSCR、IRRまでまとめて試算できます。</p>
+        <p class="lead">減価償却、法人税、税引後キャッシュフロー、売却時残債、売却益、IRR、DSCR、LTVまで一画面で試算します。入力内容はこのブラウザに自動保存されます。</p>
       </div>
-      <div class="actions" aria-label="操作">
-        <button class="btn" type="button" id="resetBtn">初期値に戻す</button>
-        <button class="btn primary" type="button" id="printBtn">印刷・PDF</button>
+      <div>
+        <div class="actions" aria-label="操作">
+          <button class="btn primary" type="button" id="saveBtn">保存</button>
+          <button class="btn" type="button" id="resetBtn">初期値</button>
+          <button class="btn" type="button" id="printBtn">PDF</button>
+        </div>
+        <div class="status" id="saveStatus">自動保存オン</div>
       </div>
     </header>
 
@@ -441,19 +514,19 @@
         </div>
         <form class="inputs" id="form">
           <details open>
-            <summary>購入・取得費</summary>
+            <summary>購入・資金計画</summary>
             <div class="field-grid">
               <label>購入価格
-                <span class="control"><input data-key="price" type="number" min="0" step="100000" value="30000000"><span class="unit">円</span></span>
+                <span class="control"><input data-key="price" type="number" min="0" step="100000"><span class="unit">円</span></span>
               </label>
               <label>諸費用率
-                <span class="control"><input data-key="closingRate" type="number" min="0" step="0.1" value="7"><span class="unit">%</span></span>
+                <span class="control"><input data-key="closingRate" type="number" min="0" step="0.1"><span class="unit">%</span></span>
               </label>
               <label>リフォーム費
-                <span class="control"><input data-key="renovation" type="number" min="0" step="10000" value="1000000"><span class="unit">円</span></span>
+                <span class="control"><input data-key="renovation" type="number" min="0" step="10000"><span class="unit">円</span></span>
               </label>
               <label>自己資金比率
-                <span class="control"><input data-key="downRate" type="number" min="0" max="100" step="1" value="20"><span class="unit">%</span></span>
+                <span class="control"><input data-key="downRate" type="number" min="0" max="100" step="1"><span class="unit">%</span></span>
               </label>
             </div>
           </details>
@@ -462,49 +535,67 @@
             <summary>融資</summary>
             <div class="field-grid">
               <label>金利
-                <span class="control"><input data-key="interestRate" type="number" min="0" step="0.05" value="2.2"><span class="unit">%</span></span>
+                <span class="control"><input data-key="interestRate" type="number" min="0" step="0.05"><span class="unit">%</span></span>
               </label>
               <label>返済期間
-                <span class="control"><input data-key="loanYears" type="number" min="1" max="50" step="1" value="30"><span class="unit">年</span></span>
+                <span class="control"><input data-key="loanYears" type="number" min="1" max="50" step="1"><span class="unit">年</span></span>
               </label>
             </div>
           </details>
 
           <details open>
-            <summary>賃料・運営費</summary>
+            <summary>収入・運営費</summary>
             <div class="field-grid">
               <label>月額満室賃料
-                <span class="control"><input data-key="monthlyRent" type="number" min="0" step="1000" value="240000"><span class="unit">円</span></span>
+                <span class="control"><input data-key="monthlyRent" type="number" min="0" step="1000"><span class="unit">円</span></span>
               </label>
               <label>稼働率
-                <span class="control"><input data-key="occupancy" type="number" min="0" max="100" step="1" value="95"><span class="unit">%</span></span>
+                <span class="control"><input data-key="occupancy" type="number" min="0" max="100" step="1"><span class="unit">%</span></span>
               </label>
-              <label>管理費・共用費率
-                <span class="control"><input data-key="opexRate" type="number" min="0" max="100" step="0.5" value="12"><span class="unit">%</span></span>
+              <label>運営費率
+                <span class="control"><input data-key="opexRate" type="number" min="0" max="100" step="0.5"><span class="unit">%</span></span>
               </label>
               <label>固定資産税・保険 年額
-                <span class="control"><input data-key="taxInsurance" type="number" min="0" step="10000" value="280000"><span class="unit">円</span></span>
+                <span class="control"><input data-key="taxInsurance" type="number" min="0" step="10000"><span class="unit">円</span></span>
               </label>
-              <label>修繕積立 年額
-                <span class="control"><input data-key="repairs" type="number" min="0" step="10000" value="180000"><span class="unit">円</span></span>
+              <label>修繕費 年額
+                <span class="control"><input data-key="repairs" type="number" min="0" step="10000"><span class="unit">円</span></span>
               </label>
               <label>その他費用 年額
-                <span class="control"><input data-key="otherCosts" type="number" min="0" step="10000" value="60000"><span class="unit">円</span></span>
+                <span class="control"><input data-key="otherCosts" type="number" min="0" step="10000"><span class="unit">円</span></span>
               </label>
             </div>
           </details>
 
-          <details>
+          <details open>
+            <summary>減価償却・法人税</summary>
+            <div class="field-grid">
+              <label>建物比率
+                <span class="control"><input data-key="buildingRate" type="number" min="0" max="100" step="1"><span class="unit">%</span></span>
+              </label>
+              <label>耐用年数
+                <span class="control"><input data-key="depreciationYears" type="number" min="1" max="60" step="1"><span class="unit">年</span></span>
+              </label>
+              <label>法人税率
+                <span class="control"><input data-key="corporateTaxRate" type="number" min="0" max="60" step="0.1"><span class="unit">%</span></span>
+              </label>
+              <label>売却益課税率
+                <span class="control"><input data-key="capitalGainTaxRate" type="number" min="0" max="60" step="0.1"><span class="unit">%</span></span>
+              </label>
+            </div>
+          </details>
+
+          <details open>
             <summary>売却シナリオ</summary>
             <div class="field-grid">
-              <label>保有年数
-                <span class="control"><input data-key="holdYears" type="number" min="1" max="50" step="1" value="10"><span class="unit">年</span></span>
+              <label>売却年
+                <span class="control"><input data-key="saleYear" type="number" min="1" max="10" step="1"><span class="unit">年</span></span>
               </label>
               <label>価格上昇率 年率
-                <span class="control"><input data-key="appreciation" type="number" step="0.1" value="0.5"><span class="unit">%</span></span>
+                <span class="control"><input data-key="appreciation" type="number" step="0.1"><span class="unit">%</span></span>
               </label>
               <label>売却費用率
-                <span class="control"><input data-key="saleCostRate" type="number" min="0" max="20" step="0.1" value="3"><span class="unit">%</span></span>
+                <span class="control"><input data-key="saleCostRate" type="number" min="0" max="20" step="0.1"><span class="unit">%</span></span>
               </label>
             </div>
           </details>
@@ -517,46 +608,56 @@
         </div>
         <div class="results">
           <div class="score">
-            <div class="score-top">
-              <div>
-                <div class="score-label">年間返済後キャッシュフロー</div>
-                <div class="score-value" id="annualCashFlow">0円</div>
+            <div class="score-content">
+              <div class="score-top">
+                <div>
+                  <div class="score-label">年間 税引後キャッシュフロー</div>
+                  <div class="score-value" id="afterTaxCashFlow">0円</div>
+                </div>
+                <div class="badge" id="healthBadge">判定</div>
               </div>
-              <div class="badge" id="healthBadge">判定</div>
+              <p class="score-note" id="scoreNote">入力値をもとに自動計算します。</p>
             </div>
-            <p class="score-note" id="scoreNote">入力値をもとに自動計算します。</p>
           </div>
 
           <div class="kpis" id="kpis"></div>
 
           <div class="chart-wrap">
-            <h2>年間収支の内訳</h2>
+            <h2>年間収支の分解</h2>
             <canvas id="barChart" width="900" height="360" aria-label="年間収支の棒グラフ"></canvas>
           </div>
 
-          <div class="table">
-            <table>
-              <thead>
-                <tr>
-                  <th>年</th>
-                  <th>NOI</th>
-                  <th>返済額</th>
-                  <th>CF</th>
-                  <th>ローン残高</th>
-                  <th>売却後累計</th>
-                </tr>
-              </thead>
-              <tbody id="projectionRows"></tbody>
-            </table>
+          <div class="table-wrap">
+            <h2>10年間キャッシュフロー表</h2>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>年</th>
+                    <th>NOI</th>
+                    <th>減価償却</th>
+                    <th>支払利息</th>
+                    <th>法人税</th>
+                    <th>返済額</th>
+                    <th>税引後CF</th>
+                    <th>残債</th>
+                    <th>売却後CF</th>
+                  </tr>
+                </thead>
+                <tbody id="cashflowRows"></tbody>
+              </table>
+            </div>
           </div>
 
-          <p class="memo">計算は概算です。税金、減価償却、購入時の個別費用、空室期間の偏り、金利変動、譲渡所得税などは必要に応じて別途確認してください。</p>
+          <p class="memo">本ツールは概算用です。法人税は「NOI - 支払利息 - 減価償却」を課税所得として簡易計算し、売却益は「売却価格 - 売却費用 - 簿価」で概算しています。実際の税務・会計処理は専門家へ確認してください。</p>
         </div>
       </section>
     </section>
   </main>
 
   <script>
+    const STORAGE_KEY = "realEstateInvestmentAnalyzer.v2";
+
     const defaults = {
       price: 30000000,
       closingRate: 7,
@@ -570,7 +671,11 @@
       taxInsurance: 280000,
       repairs: 180000,
       otherCosts: 60000,
-      holdYears: 10,
+      buildingRate: 70,
+      depreciationYears: 22,
+      corporateTaxRate: 30,
+      capitalGainTaxRate: 30,
+      saleYear: 10,
       appreciation: 0.5,
       saleCostRate: 3
     };
@@ -578,16 +683,22 @@
     const form = document.querySelector("#form");
     const inputs = [...form.querySelectorAll("input")];
     const kpis = document.querySelector("#kpis");
-    const rows = document.querySelector("#projectionRows");
-    const annualCashFlowEl = document.querySelector("#annualCashFlow");
+    const rows = document.querySelector("#cashflowRows");
+    const afterTaxCashFlowEl = document.querySelector("#afterTaxCashFlow");
     const healthBadge = document.querySelector("#healthBadge");
     const scoreNote = document.querySelector("#scoreNote");
+    const saveStatus = document.querySelector("#saveStatus");
     const chart = document.querySelector("#barChart");
     const ctx = chart.getContext("2d");
 
     function yen(value) {
-      const rounded = Math.round(value);
-      return `${rounded.toLocaleString("ja-JP")}円`;
+      if (!Number.isFinite(value)) return "-";
+      return `${Math.round(value).toLocaleString("ja-JP")}円`;
+    }
+
+    function manYen(value) {
+      if (!Number.isFinite(value)) return "-";
+      return `${Math.round(value / 10000).toLocaleString("ja-JP")}万円`;
     }
 
     function pct(value) {
@@ -607,6 +718,30 @@
       }, {});
     }
 
+    function applyValues(values) {
+      inputs.forEach((input) => {
+        input.value = values[input.dataset.key] ?? defaults[input.dataset.key] ?? 0;
+      });
+    }
+
+    function saveValues(message = "保存しました") {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(readValues()));
+      saveStatus.textContent = message;
+      window.clearTimeout(saveValues.timer);
+      saveValues.timer = window.setTimeout(() => {
+        saveStatus.textContent = "自動保存オン";
+      }, 1800);
+    }
+
+    function loadValues() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+        applyValues({ ...defaults, ...(saved || {}) });
+      } catch (error) {
+        applyValues(defaults);
+      }
+    }
+
     function monthlyPayment(principal, annualRate, years) {
       const months = Math.max(1, years * 12);
       const r = annualRate / 100 / 12;
@@ -614,13 +749,44 @@
       return principal * r / (1 - Math.pow(1 + r, -months));
     }
 
-    function remainingBalance(principal, annualRate, years, paidMonths) {
-      const months = Math.max(1, years * 12);
+    function loanSchedule(principal, annualRate, years, targetYear) {
       const r = annualRate / 100 / 12;
-      const n = Math.min(months, Math.max(0, paidMonths));
-      if (r === 0) return principal * (1 - n / months);
       const payment = monthlyPayment(principal, annualRate, years);
-      return Math.max(0, principal * Math.pow(1 + r, n) - payment * ((Math.pow(1 + r, n) - 1) / r));
+      let balance = principal;
+      let interestPaid = 0;
+      let principalPaid = 0;
+
+      for (let month = 1; month <= 12; month += 1) {
+        const interest = balance * r;
+        const principalPart = Math.min(balance, payment - interest);
+        balance = Math.max(0, balance - principalPart);
+        interestPaid += interest;
+        principalPaid += principalPart;
+      }
+
+      if (targetYear <= 1) {
+        return { balance, interestPaid, principalPaid, annualDebt: payment * 12 };
+      }
+
+      let rollingBalance = principal;
+      let yearInterest = 0;
+      let yearPrincipal = 0;
+      for (let month = 1; month <= targetYear * 12; month += 1) {
+        const interest = rollingBalance * r;
+        const principalPart = Math.min(rollingBalance, payment - interest);
+        rollingBalance = Math.max(0, rollingBalance - principalPart);
+        if (month > (targetYear - 1) * 12) {
+          yearInterest += interest;
+          yearPrincipal += principalPart;
+        }
+      }
+
+      return {
+        balance: rollingBalance,
+        interestPaid: yearInterest,
+        principalPaid: yearPrincipal,
+        annualDebt: payment * 12
+      };
     }
 
     function npv(rate, cashflows) {
@@ -633,14 +799,14 @@
       let lowValue = npv(low, cashflows);
       let highValue = npv(high, cashflows);
 
-      for (let i = 0; i < 20 && lowValue * highValue > 0; i += 1) {
+      for (let i = 0; i < 24 && lowValue * highValue > 0; i += 1) {
         high += 1.5;
         highValue = npv(high, cashflows);
       }
 
       if (lowValue * highValue > 0) return NaN;
 
-      for (let i = 0; i < 80; i += 1) {
+      for (let i = 0; i < 90; i += 1) {
         const mid = (low + high) / 2;
         const midValue = npv(mid, cashflows);
         if (Math.abs(midValue) < 0.01) return mid;
@@ -663,43 +829,84 @@
       const initialCash = downPayment + closingCosts + values.renovation;
       const grossAnnualRent = values.monthlyRent * 12;
       const effectiveRent = grossAnnualRent * values.occupancy / 100;
-      const variableOpex = effectiveRent * values.opexRate / 100;
-      const operatingCosts = variableOpex + values.taxInsurance + values.repairs + values.otherCosts;
+      const operatingCosts = effectiveRent * values.opexRate / 100 + values.taxInsurance + values.repairs + values.otherCosts;
       const noi = effectiveRent - operatingCosts;
+      const depreciableBase = values.price * values.buildingRate / 100 + values.renovation;
+      const annualDepreciation = depreciableBase / Math.max(1, values.depreciationYears);
+      const saleYear = Math.min(10, Math.max(1, Math.round(values.saleYear)));
       const annualDebt = monthlyPayment(loan, values.interestRate, values.loanYears) * 12;
-      const annualCashFlow = noi - annualDebt;
-      const capRate = noi / totalCost * 100;
-      const grossYield = grossAnnualRent / values.price * 100;
-      const cashOnCash = annualCashFlow / initialCash * 100;
       const dscr = noi / annualDebt;
-      const breakEvenOccupancy = ((annualDebt + values.taxInsurance + values.repairs + values.otherCosts) / (grossAnnualRent * (1 - values.opexRate / 100))) * 100;
-      const holdYears = Math.max(1, Math.round(values.holdYears));
-      const salePrice = values.price * Math.pow(1 + values.appreciation / 100, holdYears);
-      const saleCosts = salePrice * values.saleCostRate / 100;
-      const balanceAtSale = remainingBalance(loan, values.interestRate, values.loanYears, holdYears * 12);
-      const saleProceeds = salePrice - saleCosts - balanceAtSale;
+      const ltv = loan / values.price * 100;
+      const grossYield = grossAnnualRent / values.price * 100;
+      const noiYield = noi / totalCost * 100;
       const cashflows = [-initialCash];
       const projection = [];
-      let cumulative = -initialCash;
+      let cumulativeAfterTax = -initialCash;
+      let saleDetails = null;
 
-      for (let year = 1; year <= holdYears; year += 1) {
-        const balance = remainingBalance(loan, values.interestRate, values.loanYears, year * 12);
-        const terminal = year === holdYears ? saleProceeds : 0;
-        const yearCash = annualCashFlow + terminal;
-        cumulative += yearCash;
-        cashflows.push(yearCash);
+      for (let year = 1; year <= 10; year += 1) {
+        if (year > saleYear) {
+          projection.push({
+            year,
+            noi: 0,
+            depreciation: 0,
+            interestPaid: 0,
+            corporateTax: 0,
+            annualDebt: 0,
+            beforeTaxCashFlow: 0,
+            afterTaxCashFlow: 0,
+            balance: 0,
+            saleCashFlow: 0,
+            totalAfterTaxCashFlow: 0,
+            cumulativeAfterTax
+          });
+          cashflows.push(0);
+          continue;
+        }
+
+        const loanYear = loanSchedule(loan, values.interestRate, values.loanYears, year);
+        const depreciation = Math.min(annualDepreciation, Math.max(0, depreciableBase - annualDepreciation * (year - 1)));
+        const taxableIncome = noi - loanYear.interestPaid - depreciation;
+        const corporateTax = Math.max(0, taxableIncome * values.corporateTaxRate / 100);
+        const beforeTaxCashFlow = noi - loanYear.annualDebt;
+        const afterTaxCashFlow = beforeTaxCashFlow - corporateTax;
+        let saleCashFlow = 0;
+
+        if (year === saleYear) {
+          const salePrice = values.price * Math.pow(1 + values.appreciation / 100, year);
+          const saleCosts = salePrice * values.saleCostRate / 100;
+          const accumulatedDepreciation = Math.min(depreciableBase, annualDepreciation * year);
+          const bookValue = values.price + values.renovation - accumulatedDepreciation;
+          const netSalePrice = salePrice - saleCosts;
+          const saleGain = netSalePrice - bookValue;
+          const saleTax = Math.max(0, saleGain * values.capitalGainTaxRate / 100);
+          const saleDebt = loanYear.balance;
+          saleCashFlow = netSalePrice - saleDebt - saleTax;
+          saleDetails = { salePrice, saleCosts, bookValue, saleGain, saleTax, saleDebt, saleCashFlow };
+        }
+
+        const totalAfterTaxCashFlow = afterTaxCashFlow + saleCashFlow;
+        cumulativeAfterTax += totalAfterTaxCashFlow;
+        cashflows.push(year <= saleYear ? totalAfterTaxCashFlow : 0);
         projection.push({
           year,
           noi,
-          annualDebt,
-          annualCashFlow,
-          balance,
-          cumulative
+          depreciation,
+          interestPaid: loanYear.interestPaid,
+          corporateTax,
+          annualDebt: loanYear.annualDebt,
+          beforeTaxCashFlow,
+          afterTaxCashFlow,
+          balance: loanYear.balance,
+          saleCashFlow,
+          totalAfterTaxCashFlow,
+          cumulativeAfterTax
         });
       }
 
-      const annualIrr = irr(cashflows) * 100;
-      const equityMultiple = (cashflows.slice(1).reduce((sum, cash) => sum + cash, 0)) / initialCash;
+      const firstYear = projection[0];
+      const afterTaxIrr = irr(cashflows.slice(0, saleYear + 1)) * 100;
+      const cashOnCashAfterTax = firstYear.afterTaxCashFlow / initialCash * 100;
 
       return {
         closingCosts,
@@ -710,58 +917,58 @@
         effectiveRent,
         operatingCosts,
         noi,
+        depreciableBase,
+        annualDepreciation,
         annualDebt,
-        annualCashFlow,
-        capRate,
-        grossYield,
-        cashOnCash,
         dscr,
-        breakEvenOccupancy,
-        salePrice,
-        saleProceeds,
-        annualIrr,
-        equityMultiple,
-        projection
+        ltv,
+        grossYield,
+        noiYield,
+        cashOnCashAfterTax,
+        afterTaxIrr,
+        saleDetails,
+        projection,
+        firstYear
       };
     }
 
     function classify(result) {
-      if (result.annualCashFlow > 0 && result.dscr >= 1.25 && result.cashOnCash >= 6) {
+      if (result.firstYear.afterTaxCashFlow > 0 && result.dscr >= 1.25 && result.ltv <= 80) {
         return {
           className: "good",
-          label: "健全",
-          note: "返済余力と自己資金利回りが比較的安定しています。金利上昇や空室率を少し厳しめにして再確認すると判断しやすくなります。"
+          label: "優良",
+          note: "税引後でもキャッシュフローが残り、返済余力とLTVのバランスも良好です。空室率と修繕費を保守的にしても耐えるか確認しましょう。"
         };
       }
-      if (result.annualCashFlow >= 0 && result.dscr >= 1) {
+      if (result.firstYear.afterTaxCashFlow >= 0 && result.dscr >= 1) {
         return {
           className: "warn",
-          label: "要確認",
-          note: "収支は大きく崩れていませんが、空室や修繕の増加でキャッシュフローが薄くなる可能性があります。条件交渉や費用の精査が効きます。"
+          label: "精査",
+          note: "税引後CFは確保できていますが、返済余力は厚くありません。金利上昇、空室、修繕費増加のストレスをかけると判断しやすくなります。"
         };
       }
       return {
         className: "bad",
         label: "慎重",
-        note: "返済後キャッシュフローが弱い試算です。購入価格、自己資金、金利、稼働率、修繕費の前提を見直す価値があります。"
+        note: "税引後CFまたは返済余力が弱い試算です。購入価格、自己資金、金利、稼働率、建物比率の前提を見直す余地があります。"
       };
     }
 
     function renderKpis(result) {
-      const health = classify(result);
+      const sale = result.saleDetails || {};
       const items = [
-        ["表面利回り", pct(result.grossYield), ""],
-        ["NOI利回り", pct(result.capRate), ""],
-        ["自己資金利回り", pct(result.cashOnCash), health.className],
+        ["税引後CF 年額", yen(result.firstYear.afterTaxCashFlow), result.firstYear.afterTaxCashFlow >= 0 ? "good" : "bad"],
+        ["法人税 年額", yen(result.firstYear.corporateTax), ""],
+        ["減価償却 年額", yen(result.firstYear.depreciation), ""],
         ["DSCR", multiple(result.dscr), result.dscr >= 1.25 ? "good" : result.dscr >= 1 ? "warn" : "bad"],
-        ["損益分岐稼働率", pct(result.breakEvenOccupancy), result.breakEvenOccupancy <= 85 ? "good" : result.breakEvenOccupancy <= 95 ? "warn" : "bad"],
-        ["初期自己資金", yen(result.initialCash), ""],
-        ["融資額", yen(result.loan), ""],
-        ["年間NOI", yen(result.noi), ""],
-        ["年間返済額", yen(result.annualDebt), ""],
-        ["売却時手残り", yen(result.saleProceeds), ""],
-        ["IRR", pct(result.annualIrr), Number.isFinite(result.annualIrr) && result.annualIrr >= 6 ? "good" : "warn"],
-        ["エクイティ倍率", multiple(result.equityMultiple), result.equityMultiple >= 1.5 ? "good" : "warn"]
+        ["LTV", pct(result.ltv), result.ltv <= 75 ? "good" : result.ltv <= 85 ? "warn" : "bad"],
+        ["IRR 税引後", pct(result.afterTaxIrr), Number.isFinite(result.afterTaxIrr) && result.afterTaxIrr >= 6 ? "good" : "warn"],
+        ["NOI利回り", pct(result.noiYield), ""],
+        ["表面利回り", pct(result.grossYield), ""],
+        ["自己資金利回り", pct(result.cashOnCashAfterTax), result.cashOnCashAfterTax >= 6 ? "good" : result.cashOnCashAfterTax >= 0 ? "warn" : "bad"],
+        ["売却時残債", yen(sale.saleDebt), ""],
+        ["売却益", yen(sale.saleGain), sale.saleGain >= 0 ? "good" : "bad"],
+        ["売却後手残り", yen(sale.saleCashFlow), sale.saleCashFlow >= 0 ? "good" : "bad"]
       ];
 
       kpis.innerHTML = items.map(([label, value, className]) => `
@@ -777,10 +984,13 @@
         <tr>
           <td>${row.year}年目</td>
           <td>${yen(row.noi)}</td>
+          <td>${yen(row.depreciation)}</td>
+          <td>${yen(row.interestPaid)}</td>
+          <td>${yen(row.corporateTax)}</td>
           <td>${yen(row.annualDebt)}</td>
-          <td>${yen(row.annualCashFlow)}</td>
+          <td>${yen(row.afterTaxCashFlow)}</td>
           <td>${yen(row.balance)}</td>
-          <td>${yen(row.cumulative)}</td>
+          <td>${row.saleCashFlow ? yen(row.totalAfterTaxCashFlow) : "-"}</td>
         </tr>
       `).join("");
     }
@@ -789,85 +999,78 @@
       const width = chart.width;
       const height = chart.height;
       ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = "#ffffff";
+      ctx.fillStyle = "#111417";
       ctx.fillRect(0, 0, width, height);
 
       const data = [
-        ["実効賃料", result.effectiveRent, "#0e766e"],
-        ["運営費", -result.operatingCosts, "#b45b38"],
-        ["返済額", -result.annualDebt, "#39566a"],
-        ["CF", result.annualCashFlow, result.annualCashFlow >= 0 ? "#0b7a45" : "#b33535"]
+        ["実効賃料", result.effectiveRent, "#d6b46f"],
+        ["運営費", -result.operatingCosts, "#b8844f"],
+        ["返済", -result.annualDebt, "#798b98"],
+        ["法人税", -result.firstYear.corporateTax, "#9f6257"],
+        ["税引後CF", result.firstYear.afterTaxCashFlow, result.firstYear.afterTaxCashFlow >= 0 ? "#7ed3a4" : "#f08d82"]
       ];
-      const pad = 52;
+
+      const pad = 54;
       const chartW = width - pad * 2;
       const chartH = height - pad * 2;
       const maxAbs = Math.max(...data.map((item) => Math.abs(item[1])), 1);
       const zeroY = pad + chartH * 0.42;
       const scale = chartH * 0.42 / maxAbs;
-      const barW = Math.min(110, chartW / data.length * 0.55);
+      const slot = chartW / data.length;
+      const barW = Math.min(92, slot * 0.54);
 
-      ctx.strokeStyle = "#dce5e1";
+      ctx.strokeStyle = "rgba(230, 204, 157, 0.22)";
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.moveTo(pad - 12, zeroY);
       ctx.lineTo(width - pad + 12, zeroY);
       ctx.stroke();
 
-      ctx.fillStyle = "#60706b";
-      ctx.font = "22px system-ui, sans-serif";
-      ctx.textAlign = "left";
-      ctx.fillText("0", 18, zeroY + 7);
-
       data.forEach(([label, value, color], index) => {
-        const x = pad + chartW / data.length * index + chartW / data.length / 2 - barW / 2;
+        const x = pad + slot * index + slot / 2 - barW / 2;
         const barH = Math.abs(value) * scale;
         const y = value >= 0 ? zeroY - barH : zeroY;
 
         ctx.fillStyle = color;
         ctx.fillRect(x, y, barW, Math.max(2, barH));
 
-        ctx.fillStyle = "#18211f";
-        ctx.font = "24px system-ui, sans-serif";
+        ctx.fillStyle = "#f7f1e7";
+        ctx.font = "22px system-ui, sans-serif";
         ctx.textAlign = "center";
-        ctx.fillText(label, x + barW / 2, height - 23);
+        ctx.fillText(label, x + barW / 2, height - 22);
 
-        ctx.fillStyle = "#60706b";
+        ctx.fillStyle = "#b9aa94";
         ctx.font = "20px system-ui, sans-serif";
-        const valueText = `${Math.round(value / 10000).toLocaleString("ja-JP")}万円`;
-        ctx.fillText(valueText, x + barW / 2, value >= 0 ? Math.max(24, y - 14) : y + barH + 28);
+        ctx.fillText(manYen(value), x + barW / 2, value >= 0 ? Math.max(24, y - 14) : y + barH + 28);
       });
     }
 
     function update() {
-      const values = readValues();
-      const result = calculate(values);
+      const result = calculate(readValues());
       const health = classify(result);
 
-      annualCashFlowEl.textContent = yen(result.annualCashFlow);
+      afterTaxCashFlowEl.textContent = yen(result.firstYear.afterTaxCashFlow);
       healthBadge.textContent = health.label;
+      healthBadge.style.color = health.className === "good" ? "var(--good)" : health.className === "warn" ? "var(--warn)" : "var(--bad)";
       scoreNote.textContent = health.note;
-      healthBadge.style.background = health.className === "good"
-        ? "rgba(31, 171, 103, 0.34)"
-        : health.className === "warn"
-          ? "rgba(226, 142, 37, 0.30)"
-          : "rgba(214, 76, 76, 0.34)";
-
       renderKpis(result);
       renderRows(result);
       drawChart(result);
+      saveValues("自動保存しました");
     }
 
     inputs.forEach((input) => input.addEventListener("input", update));
 
+    document.querySelector("#saveBtn").addEventListener("click", () => saveValues("保存しました"));
+    document.querySelector("#printBtn").addEventListener("click", () => window.print());
     document.querySelector("#resetBtn").addEventListener("click", () => {
-      inputs.forEach((input) => {
-        input.value = defaults[input.dataset.key];
-      });
+      applyValues(defaults);
+      localStorage.removeItem(STORAGE_KEY);
       update();
+      saveStatus.textContent = "初期値に戻しました";
     });
 
-    document.querySelector("#printBtn").addEventListener("click", () => window.print());
-
+    loadValues();
     update();
   </script>
 </body>
