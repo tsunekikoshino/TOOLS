@@ -269,12 +269,10 @@ def main():
 
     root_folder_id = get_required_env("GOOGLE_DRIVE_FOLDER_ID")
     service = drive_service()
-    root_folder_id = resolve_root_folder_id(service, root_folder_id)
 
     yyyy, yyyy_mm, yyyy_mm_dd, yyyymmdd = today_parts()
     log(f"Target date: {yyyy_mm_dd}")
 
-    year_folder_id = require_child_folder(service, root_folder_id, yyyy)
     month_folder_id = require_child_folder(service, year_folder_id, yyyy_mm)
     day_folder_id = require_child_folder(service, month_folder_id, yyyy_mm_dd)
 
