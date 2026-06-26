@@ -52,6 +52,26 @@ def today_parts():
     yyyymmdd = now.strftime("%Y%m%d")
     return yyyy, yyyy_mm, yyyy_mm_dd, yyyymmdd
 
+def resolve_root_folder_id(service, folder_id):
+    meta = service.files().get(
+        fileId=folder_id,
+        fields="id, name, mimeType, shortcutDetails",
+        supportsAllDrives=True,
+    ).execute()
+
+    log(f"root folder meta: {meta}")
+
+    if meta.get("mimeType") == "application/vnd.google-apps.shortcut":
+        details = meta.get("shortcutDetails") or {}
+        target_id = details.get("targetId")
+        target_mime = details.get("targetMimeType")
+
+        if target_id and target_mime == "application/vnd.google-apps.folder":
+            log(f"resolved root shortcut {folder_id} -> {target_id}")
+            return target_id
+
+    return folder_id
+
 
 def find_child_folder(service, parent_id, folder_name):
     q = (
@@ -248,9 +268,11 @@ def main():
     log("=== podcast publish job started ===")
 
     root_folder_id = get_required_env("GOOGLE_DRIVE_FOLDER_ID")
-    service = drive_service()
+service = drive_service()
+root_folder_id = resolve_root_folder_id(service, root_folder_id)
 
-    yyyy, yyyy_mm, yyyy_mm_dd, yyyymmdd = today_parts()
+yyyy, yyyy_mm, yyyy_mm_dd, yyyymmdd = today_parts()
+
     log(f"Target date: {yyyy_mm_dd}")
 
     year_folder_id = require_child_folder(service, root_folder_id, yyyy)
