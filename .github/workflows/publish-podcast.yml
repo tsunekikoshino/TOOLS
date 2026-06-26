@@ -1,0 +1,47 @@
+name: Publish Fudosan AI Morning News to Podbean
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "10 22 * * *"   # 07:10 JST daily
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Write Google service account key
+        run: |
+          mkdir -p .secrets
+          cat > .secrets/gdrive.json <<'EOF'
+          ${{ secrets.GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON }}
+          EOF
+
+      - name: Run publisher
+        env:
+          TZ: Asia/Tokyo
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/.secrets/gdrive.json
+          GOOGLE_DRIVE_FOLDER_ID: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
+          PODBEAN_CLIENT_ID: ${{ secrets.PODBEAN_CLIENT_ID }}
+          PODBEAN_CLIENT_SECRET: ${{ secrets.PODBEAN_CLIENT_SECRET }}
+        run: python scripts/publish_to_podbean.py
+
+      - name: Upload logs if exists
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: publish-logs
+          path: logs/
+          if-no-files-found: ignore
