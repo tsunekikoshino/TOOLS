@@ -44,26 +44,39 @@ def today_parts():
     return yyyy, yyyy_mm, yyyy_mm_dd, yyyymmdd
 
 
-def find_child_folder(service, parent_id: str, folder_name: str):
-    query = (
+def find_child_folder(service, parent_id, folder_name):
+    q = (
         f"'{parent_id}' in parents and "
-        "mimeType='application/vnd.google-apps.folder' and "
-        f"name='{folder_name}' and trashed=false"
+        f"name = '{folder_name}' and "
+        "mimeType = 'application/vnd.google-apps.folder' and "
+        "trashed = false"
     )
-    result = service.files().list(
-        q=query,
-        fields="files(id,name)",
-        pageSize=10
+
+    response = service.files().list(
+        q=q,
+        fields="files(id, name, mimeType, parents, shortcutDetails)",
+        pageSize=20,
+        supportsAllDrives=True,
+        includeItemsFromAllDrives=True,
     ).execute()
-    files = result.get("files", [])
-    return files[0]["id"] if files else None
+
+    files = response.get("files", [])
+    log(f"find_child_folder parent={parent_id} name={folder_name} -> {files}")
+
+    for f in files:
+        if f.get("name") == folder_name and f.get("mimeType") == "application/vnd.google-apps.folder":
+            return f["id"]
+
+    return None
 
 
-def require_child_folder(service, parent_id: str, folder_name: str):
-    folder_id = find_child_folder(service, parent_id, folder_name)
-    if not folder_id:
-        raise RuntimeError(f"Folder not found: {folder_name} under parent {parent_id}")
-    return folder_id
+def require_child_folder(service, parent_id, folder_name):
+    child_id = find_child_folder(service, parent_id, folder_name)
+    if not child_id:
+        raise RuntimeError(
+            f"Folder not found: {folder_name} under parent {parent_id}"
+        )
+    return child_id
 
 
 def find_file(service, parent_id: str, file_name: str):
