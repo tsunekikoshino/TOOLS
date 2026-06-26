@@ -23,7 +23,9 @@ def log(message: str):
 
 
 def save_json(path: str, data):
-    os.makedirs(os.path.dirname(path), exist_ok=True)
+    directory = os.path.dirname(path)
+    if directory:
+        os.makedirs(directory, exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
@@ -51,26 +53,6 @@ def today_parts():
     yyyy_mm_dd = now.strftime("%Y-%m-%d")
     yyyymmdd = now.strftime("%Y%m%d")
     return yyyy, yyyy_mm, yyyy_mm_dd, yyyymmdd
-
-def resolve_root_folder_id(service, folder_id):
-    meta = service.files().get(
-        fileId=folder_id,
-        fields="id, name, mimeType, shortcutDetails",
-        supportsAllDrives=True,
-    ).execute()
-
-    log(f"root folder meta: {meta}")
-
-    if meta.get("mimeType") == "application/vnd.google-apps.shortcut":
-        details = meta.get("shortcutDetails") or {}
-        target_id = details.get("targetId")
-        target_mime = details.get("targetMimeType")
-
-        if target_id and target_mime == "application/vnd.google-apps.folder":
-            log(f"resolved root shortcut {folder_id} -> {target_id}")
-            return target_id
-
-    return folder_id
 
 
 def find_child_folder(service, parent_id, folder_name):
@@ -150,7 +132,10 @@ def download_drive_file(service, file_id, dest_path):
         while not done:
             status, done = downloader.next_chunk()
             if status:
-                log(f"download progress {os.path.basename(dest_path)}: {int(status.progress() * 100)}%")
+                log(
+                    f"download progress {os.path.basename(dest_path)}: "
+                    f"{int(status.progress() * 100)}%"
+                )
     log(f"downloaded: {dest_path}")
 
 
@@ -158,7 +143,6 @@ def get_podbean_access_token():
     url = "https://api.podbean.com/v1/oauth/token"
     data = {"grant_type": "client_credentials"}
 
-    # もし将来 secret を追加したら使えるようにしておく
     podcast_id = os.environ.get("PODBEAN_BLOG_ID", "").strip()
     if podcast_id:
         data["podcast_id"] = podcast_id
@@ -222,7 +206,8 @@ def upload_binary_to_presigned_url(presigned_url, file_path, content_type):
 
     if response.status_code not in (200, 201, 204):
         raise RuntimeError(
-            f"Upload to presigned_url failed: status={response.status_code}, body={response.text[:500]}"
+            f"Upload to presigned_url failed: "
+            f"status={response.status_code}, body={response.text[:500]}"
         )
 
     log(f"uploaded audio to storage: {os.path.basename(file_path)}")
@@ -273,9 +258,8 @@ def main():
     yyyy, yyyy_mm, yyyy_mm_dd, yyyymmdd = today_parts()
     log(f"Target date: {yyyy_mm_dd}")
 
-month_folder_id = require_child_folder(service, root_folder_id, yyyy_mm)
-day_folder_id = require_child_folder(service, month_folder_id, yyyy_mm_dd)
-
+    month_folder_id = require_child_folder(service, root_folder_id, yyyy_mm)
+    day_folder_id = require_child_folder(service, month_folder_id, yyyy_mm_dd)
 
     audio_name = f"podcast_audio_{yyyymmdd}.mp3"
     script_name = f"podcast_script_{yyyymmdd}.txt"
@@ -306,7 +290,9 @@ day_folder_id = require_child_folder(service, month_folder_id, yyyy_mm_dd)
 
     handoff_status = str(payload.get("status", "")).strip().lower()
     if handoff_status != "ready":
-        raise RuntimeError(f"publish_payload status must be 'ready', got: {payload.get('status')}")
+        raise RuntimeError(
+            f"publish_payload status must be 'ready', got: {payload.get('status')}"
+        )
 
     log(f"Payload title: {payload.get('title', '')}")
     log(f"Script length: {len(script_text)} chars")
@@ -329,6 +315,7 @@ day_folder_id = require_child_folder(service, month_folder_id, yyyy_mm_dd)
         log(f"Media URL: {media_url}")
 
     log("=== podcast publish job finished ===")
+
 
 if __name__ == "__main__":
     try:
