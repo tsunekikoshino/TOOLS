@@ -273,8 +273,9 @@ def main():
     yyyy, yyyy_mm, yyyy_mm_dd, yyyymmdd = today_parts()
     log(f"Target date: {yyyy_mm_dd}")
 
-    month_folder_id = require_child_folder(service, year_folder_id, yyyy_mm)
-    day_folder_id = require_child_folder(service, month_folder_id, yyyy_mm_dd)
+month_folder_id = require_child_folder(service, root_folder_id, yyyy_mm)
+day_folder_id = require_child_folder(service, month_folder_id, yyyy_mm_dd)
+
 
     audio_name = f"podcast_audio_{yyyymmdd}.mp3"
     script_name = f"podcast_script_{yyyymmdd}.txt"
