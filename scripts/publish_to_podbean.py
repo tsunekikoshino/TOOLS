@@ -268,11 +268,10 @@ def main():
     log("=== podcast publish job started ===")
 
     root_folder_id = get_required_env("GOOGLE_DRIVE_FOLDER_ID")
-service = drive_service()
-root_folder_id = resolve_root_folder_id(service, root_folder_id)
+    service = drive_service()
+    root_folder_id = resolve_root_folder_id(service, root_folder_id)
 
-yyyy, yyyy_mm, yyyy_mm_dd, yyyymmdd = today_parts()
-
+    yyyy, yyyy_mm, yyyy_mm_dd, yyyymmdd = today_parts()
     log(f"Target date: {yyyy_mm_dd}")
 
     year_folder_id = require_child_folder(service, root_folder_id, yyyy)
@@ -331,7 +330,6 @@ yyyy, yyyy_mm, yyyy_mm_dd, yyyymmdd = today_parts()
         log(f"Media URL: {media_url}")
 
     log("=== podcast publish job finished ===")
-
 
 if __name__ == "__main__":
     try:
